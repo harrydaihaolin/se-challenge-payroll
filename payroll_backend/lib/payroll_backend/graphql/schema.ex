@@ -1,13 +1,13 @@
 defmodule PayrollBackend.Graphql.Schema do
   use Absinthe.Schema
 
-  import_types __MODULE__.EmployeeReportsType
+  import_types __MODULE__.ReportsType
 
   query do
-    import_fields :employee_reports_queries
+    import_fields :reports_queries
   end
 
   mutation do
-    import_fields :employee_reports_mutations
+    import_fields :reports_mutations
   end
 end

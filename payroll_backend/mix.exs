@@ -45,7 +45,6 @@ defmodule PayrollBackend.MixProject do
       {:gettext, "~> 0.11"},
       {:cors_plug, "~> 2.0"},
       {:jason, "~> 1.0"},
-
       {:plug_cowboy, "~> 2.0"}
     ]
   end
