@@ -2,12 +2,11 @@ defmodule PayrollBackend.Employee do
   use PayrollBackend.Schema
   import Ecto.Query
 
-  alias PayrollBackend.{Repo, Employee, JobGroups, Record}
+  alias PayrollBackend.{Repo, Employee, Record}
 
   schema "employee" do
     field :employee_id, :decimal
-    has_many :record, Record 
-    belongs_to :job_groups, JobGroups
+    has_many :record, Record
   end
 
   def changeset(employee, params \\ %{}) do
@@ -17,7 +16,7 @@ defmodule PayrollBackend.Employee do
     |> validate_required(validate)
   end
 
-  def get_employee_by_eid(employee_id) do    
+  def get_employee_by_eid(employee_id) do
     Employee
     |> where([u], u.employee_id == ^employee_id)
     |> Repo.all

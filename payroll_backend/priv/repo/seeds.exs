@@ -16,10 +16,10 @@ alias PayrollBackend.{Repo, JobGroups}
 
 Repo.insert! %JobGroups{
   name: "A",
-  rate: "20"
+  rate: "$20"
 }
 
 Repo.insert! %JobGroups{
   name: "B",
-  rate: "30"
+  rate: "$30"
 }

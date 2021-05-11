@@ -1,14 +1,11 @@
 defmodule PayrollBackend.JobGroups do
   use PayrollBackend.Schema
   import Ecto.Query
-  alias PayrollBackend.{Repo, JobGroups, Employee}
+  alias PayrollBackend.{Repo, JobGroups}
 
   schema "job_groups" do
     field :name, :string, size: 10
     field :rate, :string
-
-    has_many :employee, Employee 
-    has_many :record, through: [:employee, :record] 
     timestamps()
   end
 
@@ -19,10 +16,10 @@ defmodule PayrollBackend.JobGroups do
     |> validate_required(validate)
   end
 
-  def get_id_by_name(name) do
+  def get_rate_by_name(name) do
     JobGroups
     |> where([u], u.name == ^name)
-    |> select([u], u.id)
+    |> select([u], u.rate)
   end
 
   def insert_job_groups(params) do

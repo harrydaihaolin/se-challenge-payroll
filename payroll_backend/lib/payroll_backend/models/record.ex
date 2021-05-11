@@ -5,7 +5,9 @@ defmodule PayrollBackend.Record do
 
   schema "record" do
     field :report_time, :string
-    field :hours,       :decimal
+    field :hours,       :integer
+    field :wage,        :integer
+    field :currency,    :string
 
     belongs_to :employee, Employee
     belongs_to :report, Report
