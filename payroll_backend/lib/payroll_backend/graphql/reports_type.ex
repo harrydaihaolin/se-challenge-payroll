@@ -1,22 +1,32 @@
 defmodule PayrollBackend.Graphql.Schema.ReportsType do
   use Absinthe.Schema.Notation
 
-  alias PayrollBackend.Resolvers
+  alias PayrollBackend.{Resolvers, Repo, Report}
 
   object :reports_queries do
-    field :get_reports, :report do
-      resolve &Resolvers.Reports.get_reports/3
+    field :get_reports, list_of :report do
+      resolve fn _, _, _ ->
+        {:ok, Repo.all(Report)}
+      end
     end
   end
 
   object :reports_mutations do
-
+    field :insert_reports, :report do
+      arg :input, non_null(:report_input)
+      resolve &Resolvers.Reports.insert_report/3
+    end
   end
 
   object :report do
     field :name,        :string
     field :file_date,   :string
-    field :created_at,  :string
+    field :inserted_at,  :string
     field :updated_at,  :string
+  end
+
+  input_object :report_input do
+    field :name,        :string
+    field :file_date,   :string
   end
 end

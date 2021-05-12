@@ -15,7 +15,7 @@ defmodule PayrollBackend.Record do
   end
 
   def changeset(record, params \\ %{}) do
-    validate = [:report_time, :hours, :employee_id, :report_id]
+    validate = [:report_time, :hours, :wage, :currency, :employee_id, :report_id]
     record
     |> cast(params, validate)
     |> validate_required(validate)
