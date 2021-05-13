@@ -6,5 +6,7 @@ defmodule PayrollBackend.Repo.Migrations.CreateEmployeeTable do
       add :employee_id, :integer
       timestamps()
     end
+
+    create unique_index(:employee, ~w(employee_id)a, name: :index_for_employee_id)
   end
 end

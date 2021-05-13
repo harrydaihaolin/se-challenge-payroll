@@ -16,6 +16,8 @@ defmodule PayrollBackend.Report do
     report
     |> cast(params, validate)
     |> validate_required(validate)
+    |> unique_constraint(:name, name: :index_for_report_name)
+    |> unique_constraint(:file_date, file_date: :index_for_file_date)
   end
 
 
@@ -24,16 +26,18 @@ defmodule PayrollBackend.Report do
     |> Repo.all()
   end
 
-  def get_id_by_report_name(name) do
+  def get_id_by_report_fields(name, file_date) do
     Report
-    |> where([u], u.name == ^name)
-    |> select([:id])
+    |> where([u], u.file_date == ^file_date and u.name == ^name)
+    |> select([u], u.id)
     |> Repo.all
     |> List.first
   end
 
   def insert_report(params) do
-    Report.changeset(%Report{}, params)
-    |> Repo.insert!
+    case get_id_by_report_fields(params.name, params.file_date) do
+      nil -> Report.changeset(%Report{}, params) |> Repo.insert!
+      id -> Repo.get!(Report, id)
+    end
   end
 end

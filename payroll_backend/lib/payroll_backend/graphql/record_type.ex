@@ -35,6 +35,7 @@ defmodule PayrollBackend.Graphql.Schema.RecordType do
     field :wage,        :integer
     field :currency,    :string
     field :employee_id, :integer
-    field :report_id,   :integer
+    field :report_name, :string
+    field :report_date, :string
   end
 end

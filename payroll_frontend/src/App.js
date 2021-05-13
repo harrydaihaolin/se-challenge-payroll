@@ -1,38 +1,78 @@
 import './App.css';
 import logo from './assets/logo.png';
 import { Grid, Button } from '@material-ui/core';
+import { useEffect, useState } from 'react';
 import { DropzoneAreaBase } from 'material-ui-dropzone';
-import { AttachFile } from '@material-ui/icons';
+import { AttachFile, ContactSupportOutlined } from '@material-ui/icons';
 import { csvParser, fileInfo } from './util/csvParser';
-import { ApolloProvider, ApolloClient, InMemoryCache, useMutation} from '@apollo/client'
-import GQL from './Apollo'
+import {INSERT_EMPLOYEE, INSERT_RECORD, INSERT_REPORT, GET_RATES_FROM_JOB_GROUP} from './util/graphql';
+import { useMutation, useQuery } from '@apollo/client';
 
+
+// const loadJobGroups = () => {
+//   const map = 
+//   console.log(map);
+//   setJobGroupMap(map);
+//   console.log(jobGroupMap)
+// }
 function App() {
   // queries and mutations
-  const [insertReport] = useMutation(GQL.INSERT_REPORT);
+  const [insertReport, {data: report_data, loading: report_loading}] = useMutation(INSERT_REPORT);
+  const [insertEmployee, {data: employee_data}] = useMutation(INSERT_EMPLOYEE);
+  const [insertRecord, {data: record_data, loading: record_loading}] = useMutation(INSERT_RECORD);
+  const {data: rates, loading: rates_loading, error} = useQuery(GET_RATES_FROM_JOB_GROUP);
 
-  const client = new ApolloClient({
-    uri: process.env.REACT_APP_BACKEND_URL,
-    cache: new InMemoryCache()
-  });
-
-  // const [insertReport] = useMutation(INSERT_REPORT);
-  const handleFileUpload = (files) => {
+  useEffect(() => {
+    
+  }, [rates]);
+  const handleFileUpload = async (files) => {
+      let map = rates.getJobGroups.reduce((map, obj) => (map[obj.name] = obj.rate, map), {});
       // processing reports
       const file = files[0].file;
       const info = fileInfo(file);
+
       insertReport({variables: {
         name: info.name,
-        fileDate: info.fileDate
-      }})
-      // processing employees and records
+        fileDate: info.date
+      }});
+      // processing job_groups, employees and records
       file && csvParser(file, (row) => {
-        console.log(row)
-      });
-  }
+        // skip header
+        if (row.data[0] !== "date" && row.data[0] !== "") {
+          console.log(row.data);
+          const date = row.data[0];
+          const hours_worked = row.data[1];
+          const job_group_name = row.data[3];
+          const price = map[job_group_name];
+          console.log(price)
 
-  return (
-    <ApolloProvider client={client}>
+          // processing employees
+          const employee_id = row.data[2];
+          employee_id && insertEmployee({
+            variables: {
+              employeeId: parseInt(employee_id)
+            }
+          })
+
+          // processing records
+          insertRecord({
+            variables: {
+              currency: price.charAt(0) ,
+              hours: parseInt(hours_worked),
+              reportTime: date,
+              wage: parseInt(price.slice(1)),
+              employeeId: parseInt(employee_id),
+              reportName: info.name,
+              reportDate: info.date
+            }
+          }).then((data) => console.log(data))
+        }
+      }, () => {
+        console.log("Complete!")
+      });
+    }
+
+    return (
       <div className="App">
         <Grid
           container
@@ -50,15 +90,13 @@ function App() {
                 filesLimit={1}
                 acceptedFiles={['.csv']}
                 dropzoneText={"Drag and drop an csv file here or click"}
-                // onChange={(files) => console.log(files)}
                 onAdd={(files) => handleFileUpload(files)}
                 onAlert={(message, variant) => console.log(`${variant}: ${message}`)}
               />
           </Grid>
         </Grid>
       </div>
-    </ApolloProvider>
-  );
+    );
 }
 
 export default App;

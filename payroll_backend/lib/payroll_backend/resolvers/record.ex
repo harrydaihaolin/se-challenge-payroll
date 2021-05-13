@@ -1,5 +1,5 @@
 defmodule PayrollBackend.Resolvers.Record do
-  alias PayrollBackend.{Record, Employee}
+  alias PayrollBackend.{Record, Employee, Report}
 
   def insert_record(_, %{input: input}, _) do
     {:ok, input
@@ -7,6 +7,9 @@ defmodule PayrollBackend.Resolvers.Record do
       {current_value, Employee.get_id_by_employee_id(current_value)}
     end)
     |> elem(1)
+    |> Map.put(:report_id, Report.get_id_by_report_fields(input.report_name, input.report_date))
+    |> Map.delete(:report_name)
+    |> Map.delete(:report_date)
     |> Record.insert_record}
   end
 end

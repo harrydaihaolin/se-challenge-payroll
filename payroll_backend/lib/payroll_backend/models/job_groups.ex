@@ -20,6 +20,8 @@ defmodule PayrollBackend.JobGroups do
     JobGroups
     |> where([u], u.name == ^name)
     |> select([u], u.rate)
+    |> Repo.all
+    |> List.first
   end
 
   def insert_job_groups(params) do

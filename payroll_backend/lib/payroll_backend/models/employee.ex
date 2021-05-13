@@ -15,6 +15,7 @@ defmodule PayrollBackend.Employee do
     employee
     |> cast(params, validate)
     |> validate_required(validate)
+    |> unique_constraint(:employee_id, name: :index_for_employee_id)
   end
 
   def get_id_by_employee_id(employee_id) do
@@ -26,7 +27,9 @@ defmodule PayrollBackend.Employee do
   end
 
   def insert_employee(params) do
-    Employee.changeset(%Employee{}, params)
-    |> Repo.insert!
+    case get_id_by_employee_id(params.employee_id) do
+      nil -> Employee.changeset(%Employee{}, params) |> Repo.insert!
+      num -> Repo.get!(Employee, num)
+    end
   end
 end

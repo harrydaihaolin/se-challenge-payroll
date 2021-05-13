@@ -9,6 +9,11 @@ defmodule PayrollBackend.Graphql.Schema.JobGroupsType do
         {:ok, Repo.all(JobGroups)}
       end
     end
+
+    field :get_rate_by_name, :string do
+      arg :input, non_null(:string) 
+      resolve &Resolvers.JobGroups.get_rate_by_name/3
+    end
   end
 
   object :job_groups_mutations do

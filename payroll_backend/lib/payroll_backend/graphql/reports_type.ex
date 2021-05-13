@@ -19,6 +19,7 @@ defmodule PayrollBackend.Graphql.Schema.ReportsType do
   end
 
   object :report do
+    field :id,          :string
     field :name,        :string
     field :file_date,   :string
     field :inserted_at,  :string
