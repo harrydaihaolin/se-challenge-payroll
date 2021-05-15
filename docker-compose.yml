@@ -1,0 +1,50 @@
+version: '3'
+
+services:
+  frontend:
+    container_name: react-app
+    build:
+      context: payroll_frontend
+      dockerfile: Dockerfile
+    volumes:
+      - ./payroll_frontend:/usr/src/frontend
+      - /usr/src/frontend/node_modules
+    ports:
+      - 3000:3000
+    depends_on:
+      - backend
+    env_file:
+      - ./payroll_frontend/.env
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+      - HOST_URL=http://0.0.0.0:3000
+  backend:
+    container_name: phoenix-app
+    build:
+      context: payroll_backend
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    volumes:
+      - ./payroll_backend:/usr/src/backend
+    ports:
+      - 4000:4000
+    restart: always
+  db:
+    image: postgres:latest
+    container_name: postgres
+    hostname: localhost
+    environment:
+      PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_DB: payroll_dev
+      POSTGRES_USER: postgres 
+      POSTGRES_PASSWORD: postgres 
+      POSTGRES_HOST_AUTH_METHOD: trust
+    restart: always
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
+    driver: local
