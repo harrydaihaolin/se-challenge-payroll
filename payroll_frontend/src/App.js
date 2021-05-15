@@ -1,40 +1,35 @@
 import './App.css';
 import logo from './assets/logo.png';
-import { Grid, Button } from '@material-ui/core';
-import { useEffect, useState } from 'react';
+import { Grid} from '@material-ui/core';
+import { useEffect} from 'react';
 import { DropzoneAreaBase } from 'material-ui-dropzone';
-import { AttachFile, ContactSupportOutlined } from '@material-ui/icons';
+import { AttachFile} from '@material-ui/icons';
 import { csvParser, fileInfo } from './util/csvParser';
-import {INSERT_EMPLOYEE, INSERT_RECORD, INSERT_REPORT, GET_RATES_FROM_JOB_GROUP} from './util/graphql';
-import { useMutation, useQuery } from '@apollo/client';
+import {INSERT_EMPLOYEE, INSERT_RECORD, INSERT_REPORT, GET_RATES_FROM_JOB_GROUP, CHECK_REPORT} from './util/graphql';
+import { useMutation, useQuery} from '@apollo/client';
 
-
-// const loadJobGroups = () => {
-//   const map = 
-//   console.log(map);
-//   setJobGroupMap(map);
-//   console.log(jobGroupMap)
-// }
 function App() {
   // queries and mutations
-  const [insertReport, {data: report_data, loading: report_loading}] = useMutation(INSERT_REPORT);
-  const [insertEmployee, {data: employee_data}] = useMutation(INSERT_EMPLOYEE);
-  const [insertRecord, {data: record_data, loading: record_loading}] = useMutation(INSERT_RECORD);
-  const {data: rates, loading: rates_loading, error} = useQuery(GET_RATES_FROM_JOB_GROUP);
+  const {data: check, loading: check_loading} = useQuery(CHECK_REPORT);
+  const {data: rates, loading: rates_loading} = useQuery(GET_RATES_FROM_JOB_GROUP);
+  const [insertReport, {loading: report_loading}] = useMutation(INSERT_REPORT);
+  const [insertEmployee, {loading: employee_loading}] = useMutation(INSERT_EMPLOYEE);
+  const [insertRecord, {loading: record_loading}] = useMutation(INSERT_RECORD);
+  
 
   useEffect(() => {
-    
-  }, [rates]);
+
+  }, [rates, check]);
+
   const handleFileUpload = async (files) => {
       let map = rates.getJobGroups.reduce((map, obj) => (map[obj.name] = obj.rate, map), {});
       // processing reports
       const file = files[0].file;
       const info = fileInfo(file);
-
       insertReport({variables: {
         name: info.name,
         fileDate: info.date
-      }});
+      }})
       // processing job_groups, employees and records
       file && csvParser(file, (row) => {
         // skip header
@@ -53,7 +48,6 @@ function App() {
               employeeId: parseInt(employee_id)
             }
           })
-
           // processing records
           insertRecord({
             variables: {
@@ -84,14 +78,16 @@ function App() {
             <img src={logo} className="App-logo" alt="logo" />
           </Grid>
           <Grid item>
-              {/* <Button onClick={() => test()}>Click</Button> */}
               <DropzoneAreaBase
                 Icon={AttachFile}
                 filesLimit={1}
                 acceptedFiles={['.csv']}
                 dropzoneText={"Drag and drop an csv file here or click"}
                 onAdd={(files) => handleFileUpload(files)}
-                onAlert={(message, variant) => console.log(`${variant}: ${message}`)}
+                onAlert={(message, variant) =>
+                  console.log(`${variant}: ${message}`
+                )
+              }
               />
           </Grid>
         </Grid>

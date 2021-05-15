@@ -4,9 +4,13 @@ defmodule PayrollBackend.Graphql.Schema.PayrollReportType do
   alias PayrollBackend.{Resolvers}
 
   object :payroll_report_queries do
-    field :get_payroll_report_by_report_id, :employee_report do
+    field :get_payroll_report_by_report_attributes, list_of :employee_report do
       arg :input, non_null(:payroll_report_input)
-      resolve &Resolvers.PayrollReport.get_payroll_report_by_report_id/3
+      resolve &Resolvers.PayrollReport.get_payroll_report_by_report_attributes/3
+    end
+
+    field :get_payroll_report, list_of :employee_report do
+      resolve &Resolvers.PayrollReport.get_payroll_report/3
     end
   end
 
@@ -27,5 +31,6 @@ defmodule PayrollBackend.Graphql.Schema.PayrollReportType do
 
   input_object :payroll_report_input do
     field :report_name, :string
+    field :file_date,   :string
   end
 end

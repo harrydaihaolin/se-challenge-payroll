@@ -9,6 +9,11 @@ defmodule PayrollBackend.Graphql.Schema.ReportsType do
         {:ok, Repo.all(Report)}
       end
     end
+
+    field :check_report, :id do
+      arg :input, non_null(:report_input)
+      resolve &Resolvers.Reports.check_report/3
+    end
   end
 
   object :reports_mutations do

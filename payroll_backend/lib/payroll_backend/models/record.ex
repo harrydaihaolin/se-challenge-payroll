@@ -22,6 +22,11 @@ defmodule PayrollBackend.Record do
     |> unique_constraint(:report, name: :index_for_record)
   end
 
+  def get_records() do
+    Record
+    |> Repo.all
+  end
+
   def get_record_by_id(id) do
     Repo.get(Record, id)
   end

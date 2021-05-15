@@ -17,4 +17,3 @@ export const csvParser = (file, process, complete) => {
         complete: complete()
     });
 }
-

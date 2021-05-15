@@ -94,3 +94,24 @@ mutation(
   }
 }
 `
+
+export const GET_PAYROLL_REPORT = gql`
+query {
+  getPayrollReport {
+   employeeId
+   payPeriod {
+     startDate
+     endDate
+   }
+ }
+}
+`
+
+export const CHECK_REPORT = gql`
+query($name: String!, $fileDate: String!) {
+  checkReport(input: {
+    name: $name,
+    fileDate: $fileDate
+  })
+}
+`

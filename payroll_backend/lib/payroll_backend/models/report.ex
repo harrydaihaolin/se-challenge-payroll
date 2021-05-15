@@ -34,10 +34,26 @@ defmodule PayrollBackend.Report do
     |> List.first
   end
 
+  def get_records_from_report(report_id) do
+    Report
+    |> Repo.get!(report_id)
+    |> Repo.preload(:record)
+  end
+
   def insert_report(params) do
     case get_id_by_report_fields(params.name, params.file_date) do
       nil -> Report.changeset(%Report{}, params) |> Repo.insert!
       id -> Repo.get!(Report, id)
     end
+  end
+
+  def get_employee_id_from_report(report_id) do
+    Report
+    |> Repo.get!(report_id)
+    |> Repo.preload(:record)
+    |> Map.get(:record)
+    |> Enum.map(fn record -> Map.get(record, :employee_id) end)
+    |> Enum.sort
+    |> Enum.dedup
   end
 end

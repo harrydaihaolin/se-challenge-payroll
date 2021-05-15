@@ -18,12 +18,28 @@ defmodule PayrollBackend.Employee do
     |> unique_constraint(:employee_id, name: :index_for_employee_id)
   end
 
+  def get_employee_ids() do
+    Employee
+    |> select([u], u.employee_id)
+    |> Repo.all
+    |> Enum.sort
+  end
+
   def get_id_by_employee_id(employee_id) do
     Employee
     |> where([u], u.employee_id == ^employee_id)
     |> select([u], u.id)
     |> Repo.all
     |> List.first
+  end
+
+  def get_records_from_employee(employee_id) do
+    Employee
+    |> where([u], u.employee_id == ^employee_id)
+    |> preload(:record)
+    |> Repo.all
+    |> Enum.map(fn employee -> Map.get(employee, :record) end)
+    |> List.flatten
   end
 
   def insert_employee(params) do
