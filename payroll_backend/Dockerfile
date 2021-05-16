@@ -7,8 +7,10 @@ WORKDIR /app
 
 # Install hex manager
 RUN mix local.hex --force
+RUN mix local.rebar --force
 # Compile the project
-RUN mix do compile
+RUN mix deps.get
+RUN mix deps.compile
 
 EXPOSE 4000
-CMD ["./run.sh"]
+CMD mix setup && mix phx.server
