@@ -20,7 +20,7 @@ defmodule PayrollBackend.Graphql.Schema.RecordType do
 
   object :record do
     field :report_time, :string
-    field :hours,       :integer
+    field :hours,       :float
     field :wage,        :integer
     field :currency,    :string
     field :employee_id, :integer
@@ -31,7 +31,7 @@ defmodule PayrollBackend.Graphql.Schema.RecordType do
 
   input_object :record_input do
     field :report_time, :string
-    field :hours,       :integer
+    field :hours,       :float
     field :wage,        :integer
     field :currency,    :string
     field :employee_id, :integer

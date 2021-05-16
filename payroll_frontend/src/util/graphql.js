@@ -72,7 +72,7 @@ mutation($name: String!, $fileDate: String!) {
 export const INSERT_RECORD = gql`
 mutation(
   $currency: String!,
-  $hours: Int!,
+  $hours: Float!,
   $reportTime: String!,
   $wage: Int!,
 	$reportName: String!,

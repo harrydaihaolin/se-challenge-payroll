@@ -7,17 +7,16 @@
 ![Payroll](https://user-images.githubusercontent.com/13538182/117767251-aef47d00-b1fe-11eb-9331-019f73cca522.png)
 
 ## Installation Instructions
-- Please don't occupy port 5432 in the local, i.e. having another postgresql server in the local
-
+- Once you have the docker environment setup correctly, run the command below, then grad a tea
 ```sh
 docker-compose up --build
 ```
 
 ## Endpoints
-- everything is deployed in the local
+- everything is now deployed in the local
 - frontend: localhost:3000 
 - backend: localhost:4000
-- database: localhost:5432
+- database: postgres:5432
 
 ## Project Description
 ### Insert Payroll Reports
@@ -35,7 +34,7 @@ curl \
                                                           --data '{ "query": "{ getPayrollReport { employeeId payPeriod { startDate endDate } amountPaid } }" }' \
                                                           http://localhost:4000/graphql
 ```
-- Another way to run this is to go to http://localhost:4000/graphiql, which is the interactive test interface for graphql, and run:
+- Another way to run this is to go to `http://localhost:4000/graphiql`, which is the interactive test interface for graphql, and run:
 ```
 query {
   getPayrollReport {

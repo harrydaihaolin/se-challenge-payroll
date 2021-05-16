@@ -31,14 +31,14 @@ defmodule PayrollBackend.Resolvers.PayrollReport do
   end
 
   def range_of_date_parser(employee_id) do
-    range_of_date = 
-      Employee.get_records_from_employee(employee_id) 
-      |> range_of_date_records_parser
+      range_of_date = 
+        Employee.get_records_from_employee(employee_id) 
+        |> range_of_date_records_parser
 
-    beginning_of_date = Date.beginning_of_month(elem(range_of_date, 0))
-    end_of_date = Date.end_of_month(elem(range_of_date, 1))
-    months = Integer.floor_div(Date.diff(end_of_date, beginning_of_date), 30) 
-    {beginning_of_date, months}
+      beginning_of_date = Date.beginning_of_month(elem(range_of_date, 0))
+      end_of_date = Date.end_of_month(elem(range_of_date, 1))
+      months = Integer.floor_div(Date.diff(end_of_date, beginning_of_date), 30) 
+      {beginning_of_date, months}
   end
 
   defp range_of_date_parser_by_report_id(report_id) do
@@ -74,7 +74,7 @@ defmodule PayrollBackend.Resolvers.PayrollReport do
       end)
     end)
     |> List.flatten()
-    |> Enum.filter(fn payroll_report -> payroll_report.amount_paid != 0 end)
+    |> Enum.filter(fn payroll_report -> payroll_report.amount_paid != "$0" end)
   end
 
   defp get_payroll_report_by_report_attributes(input) do
@@ -100,7 +100,7 @@ defmodule PayrollBackend.Resolvers.PayrollReport do
 
   defp record_processor(record, range) do
     amount_paid = record
-    |> Enum.map(fn record -> [record.wage, record.report_time] end)
+    |> Enum.map(fn record -> [record.hours * record.wage, record.report_time] end)
     |> Enum.map(fn small_record -> List.replace_at(small_record, 1, Timex.parse!(List.last(small_record), "%-d/%-m/%Y", :strftime)) end)
     |> Enum.map(fn small_record -> List.replace_at(small_record, 1, NaiveDateTime.to_date(List.last(small_record))) end)
     |> Enum.filter(fn small_record -> Enum.member?(range, List.last(small_record)) end)
