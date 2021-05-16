@@ -4,7 +4,7 @@ defmodule PayrollBackend.Repo.Migrations.CreateRecordTable do
   def change do
     create table("record") do
       add :report_time, :string
-      add :hours,       :integer
+      add :hours,       :float
       add :wage,        :integer
       add :currency,    :string, size: 4
       add :employee_id,    references("employee"),   null: false

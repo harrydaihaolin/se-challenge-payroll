@@ -19,6 +19,7 @@ defmodule PayrollBackend.Graphql.Schema.EmployeeType do
   end
 
   object :employee do
+    field :id,          :id
     field :employee_id, :integer
     field :inserted_at,  :string
     field :updated_at,  :string

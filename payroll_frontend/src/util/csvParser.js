@@ -8,12 +8,11 @@ export const fileInfo = (file) => {
     }
 }
 // import sample from '../assets/time-report-42.csv';
-export const csvParser = (file, process, complete) => {
+export const csvParser = async (file, process) => {
     console.log("csv parser parsing...")
     Papa.parse(file, {
         header: false,
         download: true,
-        step: (row) => process(row),
-        complete: complete()
+        step: (row) => process(row)
     });
 }

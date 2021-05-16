@@ -4,8 +4,10 @@ use Mix.Config
 config :payroll_backend, PayrollBackend.Repo,
   username: "postgres",
   password: "postgres",
+#  password: "1997130",
   database: "payroll_dev",
   hostname: "postgres", 
+#  hostname: "localhost",
   port: "5432",
   show_sensitive_data_on_connection_error: true,
   pool_size: 10

@@ -15,7 +15,7 @@ defmodule PayrollBackend.Employee do
     employee
     |> cast(params, validate)
     |> validate_required(validate)
-    |> unique_constraint(:employee_id, name: :index_for_employee_id)
+    |> unique_constraint(:employee_id, name: :index_for_employee_id, message: "Employee ID has already been taken")
   end
 
   def get_employee_ids() do
@@ -29,8 +29,7 @@ defmodule PayrollBackend.Employee do
     Employee
     |> where([u], u.employee_id == ^employee_id)
     |> select([u], u.id)
-    |> Repo.all
-    |> List.first
+    |> Repo.one()
   end
 
   def get_records_from_employee(employee_id) do
@@ -43,9 +42,11 @@ defmodule PayrollBackend.Employee do
   end
 
   def insert_employee(params) do
-    case get_id_by_employee_id(params.employee_id) do
-      nil -> Employee.changeset(%Employee{}, params) |> Repo.insert!
-      num -> Repo.get!(Employee, num)
+    Employee.changeset(%Employee{}, params)
+    |> Repo.insert()
+    |> case do
+      {:ok, data} -> {:ok, data}
+      {:error, _} -> {:error, "failed to insert employee"}
     end
   end
 end
